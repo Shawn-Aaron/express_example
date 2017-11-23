@@ -6,7 +6,7 @@ var sql={};
 //连接参数配置
 var config={
 	user:"sa",
-	password:"zjxn@0916",
+	password:"*****",
 	server:"218.244.60.138", // You can use 'localhost\\instance' to connect to named instance
 	port:5902,  //连接数据库端口号，默认1433
 	database:"edajia",  //数据库名称
