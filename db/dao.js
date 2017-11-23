@@ -6,10 +6,10 @@ var sql={};
 //连接参数配置
 var config={
 	user:"sa",
-	password:"zjxn@0916",
-	server:"218.244.60.138", // You can use 'localhost\\instance' to connect to named instance
+	password:"********",
+	server:"********", // You can use 'localhost\\instance' to connect to named instance
 	port:5902,  //连接数据库端口号，默认1433
-	database:"edajia",  //数据库名称
+	database:"*****",  //数据库名称
 	stream:false, // You can enable streaming globally
 	/*option:{
 	 encrypt:true //Use this if you're on Windows Azure
