@@ -6,6 +6,7 @@ router.get('/', function(req, res, next) {
   console.log(dao.direction);
   //res.render('index', { title: 'Express' });
   //res.json({name: 1});
+  //测试信息
   function getInfo(error, recordInfo, affected){
     console.log("数据行数" + recordInfo.recordsets.length);
     if(recordInfo.recordsets.length > 1){
