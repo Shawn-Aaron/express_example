@@ -6,10 +6,10 @@ var sql={};
 //连接参数配置
 var config={
 	user:"sa",
-	password:"Founder123",
-	server:"172.19.51.35", // You can use 'localhost\\instance' to connect to named instance
+	password:"*******",
+	server:"******", // You can use 'localhost\\instance' to connect to named instance
 	port:1433,  //连接数据库端口号，默认1433
-	database:"X_西安环球_2017_11_09",  //数据库名称
+	database:"******",  //数据库名称
 	charset:'UTF8_GENERAL_CI',
 	stream:false, // You can enable streaming globally
 	/*option:{
