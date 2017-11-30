@@ -5,8 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
+var routes = require('./routes/routes.js');
 
 var app = express();
 
@@ -22,8 +21,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
-app.use('/users', users);
+//
+// 设置集成路由
+//
+routes(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -41,6 +42,16 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+//
+//异常处理，防止node遇到未处理的异常，导致进程崩溃！
+//
+process.on('uncaughtException', function (err) {
+  //打印出错误
+  console.log(err);
+  //打印出错误的调用栈方便调试
+  console.log(err.stack);
 });
 
 module.exports = app;
