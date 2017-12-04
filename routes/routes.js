@@ -5,4 +5,5 @@ module.exports = function(app) {
     //业务路由
     app.use('/',test);
     app.get('/orders', require("../server/models/orders"));
+    app.get('/sendgoods', require("../server/models/stockout"));
 };
