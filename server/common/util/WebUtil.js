@@ -13,4 +13,12 @@ WebUtil.formatResult=function(result){
     return resultFormat;
 };
 
+WebUtil.isEmptyString=function(result){
+    if(result.replace(/(^\s*)|(\s*$)/g, "").length ==0){
+        return true;
+    }else{
+        return false;
+    }
+};
+
 module.exports=WebUtil;

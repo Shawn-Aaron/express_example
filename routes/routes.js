@@ -6,4 +6,6 @@ module.exports = function(app) {
     app.use('/',test);
     app.get('/orders', require("../server/models/orders"));
     app.get('/sendgoods', require("../server/models/stockout"));
+    app.get('/stock', require("../server/models/stock"));
+    app.get('/invoice', require("../server/models/invoice"));
 };
