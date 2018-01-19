@@ -17,21 +17,53 @@ router.get('/orders', function(req, res, next) {
   //获取业务员姓名
   var salesman = '朱磊';
 
+  var resResult = {};
+  var searchSql = 'SELECT ISNULL(c.customer,\'未命名\') customer,SUM(c.monthplan) AS monthplan,' +
+      'SUM(c.monthlj) AS monthlj,SUM(c.complent) AS complent,SUM(c.yearlj) AS yearlj,SUM(c.yearplan) AS yearplan ' +
+      'FROM (SELECT a.KH AS customer,0 AS monthplan,ISNULL(Convert(decimal(18,2),b.monthlj/10000.00),0) AS monthlj,' +
+      '0 AS complent,Convert(decimal(18,2),a.yearlj/10000.00) AS yearlj,0 AS yearplan FROM(SELECT KH,SUM(nMoney) AS yearlj ' +
+      'FROM URDailyorders WHERE  YW=\'' + salesman + '\' AND ddate_C >= \'' + yearBegin + '\' AND ddate_C <= \'' + yearEnd + '\' GROUP BY KH) a ' +
+      'LEFT JOIN(SELECT KH,SUM(nMoney) AS monthlj FROM URDailyorders WHERE  YW=\'' + salesman + '\' AND  ddate_C >= \'' + beginDate + '\' AND ' +
+      'ddate_C <= \'' + endDate + '\' GROUP BY KH) b ON a.KH=b.KH)  c GROUP BY c.customer';
+  var searchTotalSql = 'SELECT SUM(c.monthplan) AS monthplan,' +
+      'SUM(c.monthlj) AS monthlj,SUM(c.complent) AS complent,SUM(c.yearlj) AS yearlj,SUM(c.yearplan) AS yearplan ' +
+      'FROM (SELECT a.KH AS customer,0 AS monthplan,ISNULL(Convert(decimal(18,2),b.monthlj/10000.00),0) AS monthlj,' +
+      '0 AS complent,Convert(decimal(18,2),a.yearlj/10000.00) AS yearlj,0 AS yearplan FROM(SELECT KH,SUM(nMoney) AS yearlj ' +
+      'FROM URDailyorders WHERE  YW=\'' + salesman + '\' AND ddate_C >= \'' + yearBegin + '\' AND ddate_C <= \'' + yearEnd + '\' GROUP BY KH) a ' +
+      'LEFT JOIN(SELECT KH,SUM(nMoney) AS monthlj FROM URDailyorders WHERE  YW=\'' + salesman + '\' AND  ddate_C >= \'' + beginDate + '\' AND ' +
+      'ddate_C <= \'' + endDate + '\' GROUP BY KH) b ON a.KH=b.KH)  c ';
+
   //查询回调函数
-  function resResult(error, recordInfo, affected){
+  function resDataResult(error, recordInfo, affected){
     //返回数据
     //res.json(200,webUtil.formatResult(recordInfo));
-    res.json(200,recordInfo.recordset);
+    resResult.dataList = recordInfo.recordset;
+    if(1 == page){
+      dao.query(searchTotalSql, resTotalResult);
+    }else{
+      res.json(200,resResult);
+    }
   }
 
+
+  //查询回调函数
+  function resTotalResult(error, recordInfo, affected){
+    //返回数据
+    //res.json(200,webUtil.formatResult(recordInfo));
+    resResult.total = recordInfo.recordset;
+    res.json(200,resResult);
+  }
+
+
   //查询发货情况
-  dao.queryByPage(page,size,"",'SELECT ISNULL(c.customer,\'合计\') customer,SUM(c.monthplan) AS monthplan,' +
-  'SUM(c.monthlj) AS monthlj,SUM(c.complent) AS complent,SUM(c.yearlj) AS yearlj,SUM(c.yearplan) AS yearplan ' +
-  'FROM (SELECT a.KH AS customer,0 AS monthplan,ISNULL(Convert(decimal(18,2),b.monthlj/10000.00),0) AS monthlj,' +
-  '0 AS complent,Convert(decimal(18,2),a.yearlj/10000.00) AS yearlj,0 AS yearplan FROM(SELECT KH,SUM(nMoney) AS yearlj ' +
-  'FROM URDailyorders WHERE  YW=\'' + salesman + '\' AND ddate_C >= \'' + yearBegin + '\' AND ddate_C <= \'' + yearEnd + '\' GROUP BY KH) a ' +
-  'LEFT JOIN(SELECT KH,SUM(nMoney) AS monthlj FROM URDailyorders WHERE  YW=\'' + salesman + '\' AND  ddate_C >= \'' + beginDate + '\' AND ' +
-  'ddate_C <= \'' + endDate + '\' GROUP BY KH) b ON a.KH=b.KH)  c GROUP BY c.customer WITH ROLLUP', resResult);
+  //dao.queryByPage(page,size,"",'SELECT ISNULL(c.customer,\'合计\') customer,SUM(c.monthplan) AS monthplan,' +
+  //'SUM(c.monthlj) AS monthlj,SUM(c.complent) AS complent,SUM(c.yearlj) AS yearlj,SUM(c.yearplan) AS yearplan ' +
+  //'FROM (SELECT a.KH AS customer,0 AS monthplan,ISNULL(Convert(decimal(18,2),b.monthlj/10000.00),0) AS monthlj,' +
+  //'0 AS complent,Convert(decimal(18,2),a.yearlj/10000.00) AS yearlj,0 AS yearplan FROM(SELECT KH,SUM(nMoney) AS yearlj ' +
+  //'FROM URDailyorders WHERE  YW=\'' + salesman + '\' AND ddate_C >= \'' + yearBegin + '\' AND ddate_C <= \'' + yearEnd + '\' GROUP BY KH) a ' +
+  //'LEFT JOIN(SELECT KH,SUM(nMoney) AS monthlj FROM URDailyorders WHERE  YW=\'' + salesman + '\' AND  ddate_C >= \'' + beginDate + '\' AND ' +
+  //'ddate_C <= \'' + endDate + '\' GROUP BY KH) b ON a.KH=b.KH)  c GROUP BY c.customer WITH ROLLUP', resResult);
+  dao.queryByPage(page,size,"",searchSql, resDataResult);
 
 });
 
